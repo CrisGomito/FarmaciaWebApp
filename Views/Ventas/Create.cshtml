@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Nueva Venta";
+}
+
+<h2 class="mb-4">Registrar Venta Múltiple</h2>
+
+<div class="row">
+    <!-- Panel Izquierdo: Selección de Medicamentos -->
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Agregar al Carrito</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-3">
+                    <label class="form-label">Medicamento</label>
+                    <select id="medicamentoSelect" class="form-select" asp-items="ViewBag.MedicamentoId">
+                        <option value="">-- Seleccione un medicamento --</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" id="cantidadInput" class="form-control" min="1" value="1" />
+                </div>
+                <button type="button" id="btnAgregar" class="btn btn-secondary w-100">Añadir Lista</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Derecho: Carrito de Compras -->
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Detalle de la Venta</h4>
+                <table class="table table-hover mt-3" id="tablaCarrito">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Medicamento</th>
+                            <th>Cantidad</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas se insertarán dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+
+                <div class="text-end mt-3">
+                    <button type="button" id="btnProcesarVenta" class="btn btn-success btn-lg" style="display:none;">
+                        Confirmar Venta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Array en memoria que funcionará como nuestro carrito
+        let carrito = [];
+
+        // Evento para agregar medicamentos a la tabla
+        document.getElementById('btnAgregar').addEventListener('click', function() {
+            const select = document.getElementById('medicamentoSelect');
+            const medicamentoId = select.value;
+            const medicamentoNombre = select.options[select.selectedIndex].text;
+            const cantidad = parseInt(document.getElementById('cantidadInput').value);
+
+            if (!medicamentoId || isNaN(cantidad) || cantidad <= 0) {
+                alert("Por favor seleccione un medicamento y una cantidad válida.");
+                return;
+            }
+
+            // Buscar si el medicamento ya está en el carrito para sumar la cantidad
+            const index = carrito.findIndex(item => item.medicamentoId === medicamentoId);
+            if (index > -1) {
+                carrito[index].cantidad += cantidad;
+            } else {
+                carrito.push({ medicamentoId, medicamentoNombre, cantidad });
+            }
+
+            actualizarInterfazTabla();
+
+            // Resetear el input de cantidad
+            document.getElementById('cantidadInput').value = 1;
+        });
+
+        // Función para renderizar la tabla html leyendo el array 'carrito'
+        function actualizarInterfazTabla() {
+            const tbody = document.querySelector('#tablaCarrito tbody');
+            tbody.innerHTML = '';
+
+            carrito.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                            <td>${item.medicamentoNombre}</td>
+                            <td>${item.cantidad}</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarItem(${index})">
+                                    <i class="bi bi-trash"></i> Quitar
+                                </button>
+                            </td>
+                        `;
+                tbody.appendChild(tr);
+            });
+
+            // Mostrar el botón de procesar solo si hay items
+            document.getElementById('btnProcesarVenta').style.display = carrito.length > 0 ? 'inline-block' : 'none';
+        }
+
+        // Función global para quitar items (llamada desde los botones de la tabla)
+        window.eliminarItem = function(index) {
+            carrito.splice(index, 1);
+            actualizarInterfazTabla();
+        }
+
+        // Evento principal que envía la información al servidor
+        document.getElementById('btnProcesarVenta').addEventListener('click', function() {
+            if (carrito.length === 0) return;
+
+            // Bloquear el botón para evitar dobles clics
+            const btnProcesar = this;
+            btnProcesar.disabled = true;
+            btnProcesar.innerText = "Procesando...";
+
+            // Mapear el array al formato que espera nuestro ViewModel en C#
+            const payload = {
+                Detalles: carrito.map(item => ({
+                    MedicamentoId: parseInt(item.medicamentoId),
+                    Cantidad: item.cantidad
+                }))
+            };
+
+            // Ejecutar la petición AJAX mediante Fetch API
+            fetch('@Url.Action("CreateMultiple", "Ventas")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Venta registrada con éxito.");
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        alert("Error: " + data.message);
+                        btnProcesar.disabled = false;
+                        btnProcesar.innerText = "Confirmar Venta";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Ocurrió un problema al comunicarse con el servidor.");
+                    btnProcesar.disabled = false;
+                    btnProcesar.innerText = "Confirmar Venta";
+                });
+        });
+    </script>
+}

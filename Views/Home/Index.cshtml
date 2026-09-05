@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Inicio - Sistema de Farmacia";
+}
+
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm border">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">
+            <i class="bi bi-heart-pulse-fill"></i> Sistema de Control de Inventario
+        </h1>
+        <p class="col-md-8 fs-4 text-muted mt-2">
+            Bienvenido al panel de gestión farmacéutica. Administra de forma eficiente tus proveedores, el stock de medicamentos, registra ventas múltiples y genera reportes analíticos actualizados.
+        </p>
+        <hr class="my-4">
+        <p class="fs-6 text-secondary">Selecciona una de las opciones del menú superior o utiliza los accesos directos a continuación para comenzar:</p>
+    </div>
+</div>
+
+<div class="row text-center">
+    <!-- Tarjeta Proveedores -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="text-primary mb-3">
+                        <i class="bi bi-truck display-4"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Proveedores</h3>
+                    <p class="card-text text-muted small">Gestiona los datos de contacto y la relación con cada distribuidor.</p>
+                </div>
+                <a asp-controller="Proveedores" asp-action="Index" class="btn btn-outline-primary mt-3">Ir a Proveedores</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Medicamentos -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="text-success mb-3">
+                        <i class="bi bi-capsule display-4"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Medicamentos</h3>
+                    <p class="card-text text-muted small">Controla el catálogo de fármacos, precios y niveles de stock actual.</p>
+                </div>
+                <a asp-controller="Medicamentos" asp-action="Index" class="btn btn-outline-success mt-3">Ir a Medicamentos</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Ventas -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="text-warning mb-3">
+                        <i class="bi bi-cart-check display-4"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Ventas</h3>
+                    <p class="card-text text-muted small">Registra transacciones múltiples con carrito y consulta el historial.</p>
+                </div>
+                <a asp-controller="Ventas" asp-action="Index" class="btn btn-outline-warning text-dark mt-3">Ir a Ventas</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Reportes -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="text-info mb-3">
+                        <i class="bi bi-bar-chart-line display-4"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Reportes</h3>
+                    <p class="card-text text-muted small">Visualiza el reporte detallado de medicamentos vendidos por proveedor.</p>
+                </div>
+                <a asp-controller="Reportes" asp-action="PorProveedor" class="btn btn-outline-info mt-3">Ver Reportes</a>
+            </div>
+        </div>
+    </div>
+</div>

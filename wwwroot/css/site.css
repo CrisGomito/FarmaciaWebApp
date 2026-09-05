@@ -1,0 +1,65 @@
+/* Configuración base para mantener el footer al fondo (Sticky Footer) */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px; /* Margen para el footer */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+/* Mejoras visuales para las tarjetas (Cards) de Bootstrap */
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Sombra suave para elementos destacados */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* Ajustes para las tablas de datos */
+.table th {
+    background-color: #2c3e50;
+    color: white;
+    font-weight: 500;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Personalización de botones */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
